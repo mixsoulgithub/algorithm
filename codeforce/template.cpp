@@ -23,7 +23,7 @@ int main() {
   using namespace std;
   ll_t batch;
   cin >> batch;
-  for (int batch_iter = 0; batch_iter < batch; batch_iter++) {
+  for (batch--) {
   }
   return 0;
 }
