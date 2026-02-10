@@ -1,9 +1,10 @@
 /*
-g++ --std=c++23 -o problem_id problem_id.cpp && cat problem_id.data|./problem_id
+g++ --std=c++23 -o 2148E 2148E.cpp && cat 2148E.data|./2148E
 */
 #include <algorithm>
 #include <iostream>
 #include <tuple>
+#include <unordered_map>
 #include <vector>
 #include <cmath>
 #include <bit>
@@ -24,6 +25,10 @@ int main() {
   ll_t batch;
   cin >> batch;
   for (;batch>0;batch--) {
+    unordered_map<int, int> map_1;
+    unordered_map<int, int> map_all;
+    
+
   }
   return 0;
 }
