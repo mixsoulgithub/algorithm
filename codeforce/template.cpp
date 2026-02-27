@@ -1,5 +1,5 @@
 /*
-g++ --std=c++23 -o problem_id problem_id.cpp && cat problem_id.data|./problem_id
+g++ --std=c++23 -o problem_id.out problem_id.cpp && cat problem_id.data|./problem_id
 */
 #include <algorithm>
 #include <iostream>
