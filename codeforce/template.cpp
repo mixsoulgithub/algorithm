@@ -1,5 +1,5 @@
 /*
-g++ --std=c++23 -o problem_id.out problem_id.cpp && cat problem_id.data|./problem_id
+g++ --std=c++23 -o problem_id.out problem_id.cpp && cat problem_id.data|./problem_id.out
 */
 #include <algorithm>
 #include <iostream>
@@ -18,9 +18,9 @@ template <typename Head, typename... Tail> void dbg_out(Head H, Tail... T) {
 
 typedef unsigned long long ll_t;
 typedef std::vector<long long> vll_t;
+using namespace std;
 
 int main() {
-  using namespace std;
   ll_t batch;
   cin >> batch;
   for (;batch>0;batch--) {
