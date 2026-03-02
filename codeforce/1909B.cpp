@@ -33,7 +33,7 @@ int main() {
     // printf("0x%llx\n",now);
       zeros = min(zeros, std::countr_zero(now ^ first));
     }
-    cout << (1 << (zeros + 1)) << endl;
+    cout << ((uint64_t)1 << (zeros + 1)) << endl;
   }
   return 0;
 }
