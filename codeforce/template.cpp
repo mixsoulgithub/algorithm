@@ -21,8 +21,12 @@ using namespace std;
 
 int main() {
   ll_t batch;
+cin.tie(0)->sync_with_stdio(0);
   cin >> batch;
   for (;batch>0;batch--) {
+    uint64_t ans;
+
+    cout<<ans<<endl;
   }
   return 0;
 }
