@@ -1,1 +1,14 @@
 *.out
+*.o
+*.so
+*.a
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CTestTestfile.cmake
+Makefile
+compile_commands.json
+Testing/
+*.gcno
+*.gcda
