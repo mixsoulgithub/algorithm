@@ -3,6 +3,8 @@
 *.so
 *.a
 build/
+**/.cache/
+*.cache
 cmake-build-*/
 CMakeCache.txt
 CMakeFiles/

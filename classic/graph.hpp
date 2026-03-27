@@ -87,13 +87,6 @@ struct MatrixGraph {
 
   EdgeInfo get_edge(INT from, INT to) { return edges[from][to]; }
 };
-template <typename T> struct WrapMatrixGraph : std::false_type {};
 
 // 为你的图特化
-template <uint64_t MAX_NODE_NUM, typename Node, typename EdgeInfo>
-struct WrapMatrixGraph<MatrixGraph<MAX_NODE_NUM, Node, EdgeInfo>>
-    : std::true_type {};
-
-template <typename G>
-concept MyMatrixGraph = WrapMatrixGraph<G>::value;
 #endif
