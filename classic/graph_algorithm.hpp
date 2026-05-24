@@ -68,6 +68,51 @@ template <Graph G, typename F>
   requires std::invocable<F, typename G::Node&, typename G::INT> ||
            std::invocable<F, typename G::Node&>
 void dfs(G &graph, typename G::INT start_id, F &&visit_func) {
+  using INT = typename G::INT;
+  static constexpr INT MAX_SIZE = G::MAX_SIZE;
+  std::array<INT, MAX_SIZE> to_visit_i;//the next iterater begin need to be visited
+  std::array<INT, MAX_SIZE> to_visit;
+  std::array<bool, MAX_SIZE> visited{};
+  INT to_visit_size = 0;
+  auto remove = [&](INT index,std::array<INT, MAX_SIZE> arr, INT arr_size) {
+    for (INT i = index; i < arr_size - 1; i++) {
+      arr[i] = arr[i + 1];
+    }
+    arr_size--;
+  };
+  auto append = [&](INT id,std::array<INT, MAX_SIZE> arr, INT arr_size) {
+    arr[arr_size++] = id;
+  };
+  visit_func(graph.nodes[start_id]);
+  visited[start_id]=true;
+  to_visit_i[to_visit_size]=0; //the index of start_id
+  to_visit[to_visit_size++]=start_id;//infact is visited stack
+  while (to_visit_size) {
+    while (to_visit_size) {
+       if(to_visit_i[to_visit_size-1]==graph.size){
+            to_visit_size--;
+       }
+      for (INT i = to_visit_i[to_visit_size-1]; i < graph.size; i++) {
+        if (visited[i] == false && graph.edges[to_visit[to_visit_size-1]][i] != graph.invalid_edge) {
+          visit_func(graph.nodes[i]);
+          visited[i]=true;
+          append(i,to_visit,to_visit_size);
+          to_visit_i[to_visit_size]=0;
+          break;
+        }
+      }
+    }
+    for (INT i = 0; i < graph.size; i++) {
+      if (!visited[i]) {
+        visit_func(graph.nodes[i]);
+        visited[i]=true;
+        to_visit_i[to_visit_size]=0; //the index of start_id
+        to_visit[to_visit_size++]=i;//infact is visited stack
+        break;
+      }
+    }
+  }
+
 }
 
 template <Graph G>
