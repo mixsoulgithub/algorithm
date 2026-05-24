@@ -29,7 +29,7 @@ public:
   MatrixGraph(EdgeInfo invalid, bool d = false)
       : size(0), directed(d), invalid_edge(invalid) {
     for (INT i = 0; i < MAX_SIZE; i++) {
-      for (INT j = 0; i < MAX_SIZE; i++) {
+      for (INT j = 0; j < MAX_SIZE; j++) {
         edges[i][j] = invalid_edge;
       }
     }

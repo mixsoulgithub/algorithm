@@ -51,84 +51,51 @@ TEST(MatrixGraphTest, EdgeInfoWithWeight) {
   // printf("g.edges = %d\n",g.edges[0][1]);
 }
 
-TEST(MatrixGraphTest, BFSTest_Simple) {
-  MatrixGraph<int, 2> g(false, false);
-  g.insert_node(1);
-  g.insert_node(2);
-  g.insert_edge(0, 1, true);
-  testing::internal::CaptureStdout();
-  bfs(g, 0, [&](uint64_t node) {
-    printf("%x,", node);
-  });
-  EXPECT_EQ(testing::internal::GetCapturedStdout(), "1,2,");
-}
+TEST(MatrixGraphTest, BFSTest) {
+  // undirected: chain 0-1-2-3, star 0-4, disconnected 5-6
+  MatrixGraph<int, 8> gu(false, false);
+  gu.insert_node(10);
+  gu.insert_node(20);
+  gu.insert_node(30);
+  gu.insert_node(40);
+  gu.insert_node(50);
+  gu.insert_node(60);
+  gu.insert_node(70);
+  gu.insert_edge(0, 1, true);
+  gu.insert_edge(1, 2, true);
+  gu.insert_edge(2, 3, true);
+  gu.insert_edge(0, 4, true);
+  gu.insert_edge(5, 6, true);
 
-TEST(MatrixGraphTest, BFSTest_LinearChain) {
-  MatrixGraph<int, 6> g(false, false);
-  g.insert_node(10);
-  g.insert_node(20);
-  g.insert_node(30);
-  g.insert_node(40);
-  g.insert_edge(0, 1, true);
-  g.insert_edge(1, 2, true);
-  g.insert_edge(2, 3, true);
   std::vector<int> order;
-  bfs(g, 0, [&](int node) { order.push_back(node); });
-  EXPECT_EQ(order, (std::vector<int>{10, 20, 30, 40}));
-}
+  bfs(gu, 0, [&](int node) { order.push_back(node); });
+  ASSERT_EQ(order.size(), 7u);
+  EXPECT_EQ(order[0], 10);
+  EXPECT_EQ(order[1], 20);
+  EXPECT_EQ(order[2], 50);
+  EXPECT_EQ(order[3], 30);
+  EXPECT_EQ(order[4], 40);
+  EXPECT_EQ(order[5], 60);
+  EXPECT_EQ(order[6], 70);
 
-TEST(MatrixGraphTest, BFSTest_Star) {
-  MatrixGraph<int, 6> g(false, false);
-  g.insert_node(0);
-  g.insert_node(1);
-  g.insert_node(2);
-  g.insert_node(3);
-  g.insert_edge(0, 1, true);
-  g.insert_edge(0, 2, true);
-  g.insert_edge(0, 3, true);
-  std::vector<int> order;
-  bfs(g, 0, [&](int node) { order.push_back(node); });
-  ASSERT_EQ(order.size(), 4u);
-  EXPECT_EQ(order[0], 0);
-}
-
-TEST(MatrixGraphTest, BFSTest_Disconnected) {
-  MatrixGraph<int, 6> g(false, false);
-  g.insert_node(1);
-  g.insert_node(2);
-  g.insert_node(10);
-  g.insert_node(20);
-  g.insert_edge(0, 1, true);
-  g.insert_edge(2, 3, true);
-  std::vector<int> order;
-  bfs(g, 0, [&](int node) { order.push_back(node); });
-  ASSERT_EQ(order.size(), 4u);
-  EXPECT_EQ(order[0], 1);
-  EXPECT_EQ(order[1], 2);
-}
-
-TEST(MatrixGraphTest, BFSTest_Directed) {
-  MatrixGraph<int, 6> g(false, true);
-  g.insert_node(1);
-  g.insert_node(2);
-  g.insert_node(3);
-  g.insert_edge(0, 1, true);
-  g.insert_edge(1, 2, true);
-  std::vector<int> order;
-  bfs(g, 0, [&](int node) { order.push_back(node); });
+  // directed: 0→1→2, start from 0
+  MatrixGraph<int, 4> gd(false, true);
+  gd.insert_node(1);
+  gd.insert_node(2);
+  gd.insert_node(3);
+  gd.insert_edge(0, 1, true);
+  gd.insert_edge(1, 2, true);
+  order.clear();
+  bfs(gd, 0, [&](int node) { order.push_back(node); });
   EXPECT_EQ(order, (std::vector<int>{1, 2, 3}));
-}
 
-TEST(MatrixGraphTest, BFSTest_DirectedNoBackEdge) {
-  MatrixGraph<int, 4> g(false, true);
-  g.insert_node(1);
-  g.insert_node(2);
-  g.insert_edge(0, 1, true);
-  std::vector<int> order;
-  bfs(g, 1, [&](int node) { order.push_back(node); });
-  ASSERT_EQ(order.size(), 2u);
+  // directed: 0→1, start from 1 (no back edge, fallback visits 0)
+  order.clear();
+  bfs(gd, 1, [&](int node) { order.push_back(node); });
+  ASSERT_EQ(order.size(), 3u);
   EXPECT_EQ(order[0], 2);
-  EXPECT_EQ(order[1], 1);
+  EXPECT_EQ(order[1], 3);
+  EXPECT_EQ(order[2], 1);
 }
 
 int main(int argc, char **argv) {
