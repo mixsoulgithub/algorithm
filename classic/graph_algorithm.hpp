@@ -26,42 +26,40 @@ template <Graph G, typename F>
   requires std::invocable<F, typename G::Node&, typename G::INT> ||
            std::invocable<F, typename G::Node&>
 void bfs(G &graph, typename G::INT start_id, F &&visit_func) {
-  using INT= G::INT;
-  constexpr INT MAX_SIZE=G::MAX_SIZE;
+  using INT = typename G::INT;
+  static constexpr INT MAX_SIZE = G::MAX_SIZE;
   std::array<INT, MAX_SIZE> to_visit;
-  std::array<bool, MAX_SIZE> visited;
-  INT visited_size=0;
-  INT to_visit_size=0;
-  to_visit[0]=start_id;
+  std::array<bool, MAX_SIZE> visited{};
+  INT to_visit_size = 0;
+  to_visit[0] = start_id;
   to_visit_size++;
-  auto to_visit_remove=[&](INT index){
-    for(INT i=index;i<to_visit_size-1;i++){
-        to_visit[i]=to_visit[i+1];
+  auto to_visit_remove = [&](INT index) {
+    for (INT i = index; i < to_visit_size - 1; i++) {
+      to_visit[i] = to_visit[i + 1];
     }
     to_visit_size--;
   };
-  auto to_visit_append=[&](INT id){
-    to_visit[to_visit_size++]=id;
+  auto to_visit_append = [&](INT id) {
+    to_visit[to_visit_size++] = id;
   };
-  visited[0]==true; 
-  while(to_visit_size){
-    while(to_visit_size){
-        visit_func(to_visit[0]);
-        visited_size++;
-        for(INT i=0;i<graph.size;i++){
-            if(visited[i]==false && graph[to_visit[0]][i]!=graph.invalid_edge){
-                to_visit_append(i);
-                visited[i]==true; 
-            }
+  visited[start_id] = true;
+  while (to_visit_size) {
+    while (to_visit_size) {
+      visit_func(graph.nodes[to_visit[0]]);
+      for (INT i = 0; i < graph.size; i++) {
+        if (visited[i] == false && graph.edges[to_visit[0]][i] != graph.invalid_edge) {
+          to_visit_append(i);
+          visited[i] = true;
         }
-        to_visit_remove(0);
+      }
+      to_visit_remove(0);
     }
-    for(INT i=0;i<graph.size;i++){
-        if(!visited){
-            to_visit_append(i);
-            visited[i]==true; 
-            break;
-        }
+    for (INT i = 0; i < graph.size; i++) {
+      if (!visited[i]) {
+        to_visit_append(i);
+        visited[i] = true;
+        break;
+      }
     }
   }
 }
