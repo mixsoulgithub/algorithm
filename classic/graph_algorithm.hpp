@@ -10,7 +10,7 @@ template<typename G>
 concept Graph = requires(G g) {
     typename G::INT;
     typename G::Node;
-    typename G::MAX_SIZE;
+    { G::MAX_SIZE } -> std::convertible_to<int64_t>;
     typename G::EdgeInfo;
     
     { g.size } -> std::convertible_to<typename G::INT>;
@@ -27,7 +27,7 @@ template <Graph G, typename F>
            std::invocable<F, typename G::Node&>
 void bfs(G &graph, typename G::INT start_id, F &&visit_func) {
   using INT= G::INT;
-  INT MAX_SIZE=G::MAX_SIZE;
+  constexpr INT MAX_SIZE=G::MAX_SIZE;
   std::array<INT, MAX_SIZE> to_visit;
   std::array<bool, MAX_SIZE> visited;
   INT visited_size=0;

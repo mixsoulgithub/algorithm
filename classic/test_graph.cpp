@@ -59,7 +59,7 @@ TEST(MatrixGraphTest, BFSTest) {
 
   bfs(g,0,[&](uint64_t node){
     printf("%x\n",node);
-  })
+  });
 }
 
 int main(int argc, char **argv) {

@@ -9,11 +9,15 @@
 #include <stdexcept>
 #include <type_traits>
 
-template <typename Node, int64_t MAX_SIZE, typename INT = uint64_t,
-          typename EdgeInfo = bool>
-requires std::equality_comparable<Node> && std::equality_comparable<EdgeInfo>
+template <typename _Node, int64_t _MAX_SIZE, typename _INT = uint64_t,
+          typename _EdgeInfo = bool>
+requires std::equality_comparable<_Node> && std::equality_comparable<_EdgeInfo>
 struct MatrixGraph {
 public:
+  using Node   = _Node;
+  using INT    = _INT;
+  using EdgeInfo = _EdgeInfo;
+  static constexpr int64_t MAX_SIZE = _MAX_SIZE;
   bool directed;
   INT size;
   EdgeInfo invalid_edge;
