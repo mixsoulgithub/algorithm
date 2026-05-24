@@ -70,49 +70,50 @@ template <Graph G, typename F>
 void dfs(G &graph, typename G::INT start_id, F &&visit_func) {
   using INT = typename G::INT;
   static constexpr INT MAX_SIZE = G::MAX_SIZE;
-  std::array<INT, MAX_SIZE> to_visit_i;//the next iterater begin need to be visited
-  std::array<INT, MAX_SIZE> to_visit;
+  std::array<INT, MAX_SIZE> stack;
+  std::array<INT, MAX_SIZE> iter;
   std::array<bool, MAX_SIZE> visited{};
-  INT to_visit_size = 0;
-  auto remove = [&](INT index,std::array<INT, MAX_SIZE> arr, INT arr_size) {
-    for (INT i = index; i < arr_size - 1; i++) {
-      arr[i] = arr[i + 1];
-    }
-    arr_size--;
+  INT stack_size = 0;
+
+  visited[start_id] = true;
+  iter[0] = 0;
+  stack[stack_size++] = start_id;
+
+  auto visit_and_push = [&](INT id) {
+    visit_func(graph.nodes[id]);
+    visited[id] = true;
+    iter[stack_size] = 0;
+    stack[stack_size++] = id;
   };
-  auto append = [&](INT id,std::array<INT, MAX_SIZE> arr, INT arr_size) {
-    arr[arr_size++] = id;
-  };
+
   visit_func(graph.nodes[start_id]);
-  visited[start_id]=true;
-  to_visit_i[to_visit_size]=0; //the index of start_id
-  to_visit[to_visit_size++]=start_id;//infact is visited stack
-  while (to_visit_size) {
-    while (to_visit_size) {
-       if(to_visit_i[to_visit_size-1]==graph.size){
-            to_visit_size--;
-       }
-      for (INT i = to_visit_i[to_visit_size-1]; i < graph.size; i++) {
-        if (visited[i] == false && graph.edges[to_visit[to_visit_size-1]][i] != graph.invalid_edge) {
-          visit_func(graph.nodes[i]);
-          visited[i]=true;
-          append(i,to_visit,to_visit_size);
-          to_visit_i[to_visit_size]=0;
-          break;
-        }
-      }
-    }
-    for (INT i = 0; i < graph.size; i++) {
-      if (!visited[i]) {
-        visit_func(graph.nodes[i]);
-        visited[i]=true;
-        to_visit_i[to_visit_size]=0; //the index of start_id
-        to_visit[to_visit_size++]=i;//infact is visited stack
+
+  while (true) {
+    bool found = false;
+    INT top = stack[stack_size - 1];
+    for (INT i = iter[stack_size - 1]; i < graph.size; i++) {
+      iter[stack_size - 1] = i + 1;
+      if (!visited[i] && graph.edges[top][i] != graph.invalid_edge) {
+        visit_and_push(i);
+        found = true;
         break;
       }
     }
+    if (!found) {
+      stack_size--;
+      if (stack_size == 0) {
+        bool any_left = false;
+        for (INT i = 0; i < graph.size; i++) {
+          if (!visited[i]) {
+            visit_and_push(i);
+            any_left = true;
+            break;
+          }
+        }
+        if (!any_left) break;
+      }
+    }
   }
-
 }
 
 template <Graph G>
