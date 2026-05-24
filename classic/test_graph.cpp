@@ -98,6 +98,53 @@ TEST(MatrixGraphTest, BFSTest) {
   EXPECT_EQ(order[2], 1);
 }
 
+TEST(MatrixGraphTest, DFSTest) {
+  // undirected: chain 0-1-2-3, star 0-4, disconnected 5-6
+  MatrixGraph<int, 8> gu(false, false);
+  gu.insert_node(10);
+  gu.insert_node(20);
+  gu.insert_node(30);
+  gu.insert_node(40);
+  gu.insert_node(50);
+  gu.insert_node(60);
+  gu.insert_node(70);
+  gu.insert_edge(0, 1, true);
+  gu.insert_edge(1, 2, true);
+  gu.insert_edge(2, 3, true);
+  gu.insert_edge(0, 4, true);
+  gu.insert_edge(5, 6, true);
+
+  std::vector<int> order;
+  dfs(gu, 0, [&](int node) { order.push_back(node); });
+  ASSERT_EQ(order.size(), 7u);
+  EXPECT_EQ(order[0], 10);
+  EXPECT_EQ(order[1], 20);
+  EXPECT_EQ(order[2], 30);
+  EXPECT_EQ(order[3], 40);
+  EXPECT_EQ(order[4], 50);
+  EXPECT_EQ(order[5], 60);
+  EXPECT_EQ(order[6], 70);
+
+  // directed: 0→1→2
+  MatrixGraph<int, 4> gd(false, true);
+  gd.insert_node(1);
+  gd.insert_node(2);
+  gd.insert_node(3);
+  gd.insert_edge(0, 1, true);
+  gd.insert_edge(1, 2, true);
+
+  order.clear();
+  dfs(gd, 0, [&](int node) { order.push_back(node); });
+  EXPECT_EQ(order, (std::vector<int>{1, 2, 3}));
+
+  order.clear();
+  dfs(gd, 1, [&](int node) { order.push_back(node); });
+  ASSERT_EQ(order.size(), 3u);
+  EXPECT_EQ(order[0], 2);
+  EXPECT_EQ(order[1], 3);
+  EXPECT_EQ(order[2], 1);
+}
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
